@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var px2rem = require('postcss-px2rem');
 
 module.exports = {
   context: __dirname,
@@ -10,18 +11,40 @@ module.exports = {
     publicPath: '/public/'
   },
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.js|.jsx?$/,
-        exclude: /(node_modules)/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['react', 'es2015']
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['es2015']
+          }
         }
+      },
+      { 
+        test: /\.css$/, 
+        use: [
+          'style-loader', 
+          'css-loader',
+          'postcss-loader'
+        ]
       },
       {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader!sass-loader?sourceMap'
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: 'postcss.config.js'
+              }
+            }
+          },
+          'sass-loader'
+        ]
       }
     ]
   },
